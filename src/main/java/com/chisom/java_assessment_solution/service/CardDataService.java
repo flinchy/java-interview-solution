@@ -27,7 +27,7 @@ public class CardDataService {
         cardDataResponse.setPayload(cardDataPayload);
         cardDataPayload.setScheme(binListResponse.getScheme());
         cardDataPayload.setType(binListResponse.getType());
-        cardDataPayload.setBank(binListResponse.toString());
+        cardDataPayload.setBank(binListResponse.getBank().getName());
 
         return cardDataResponse;
     }
