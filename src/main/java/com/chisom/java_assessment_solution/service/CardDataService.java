@@ -1,9 +1,11 @@
 package com.chisom.java_assessment_solution.service;
 
 import com.chisom.java_assessment_solution.exception.InvalidBinListCardNumberException;
+import com.chisom.java_assessment_solution.model.CardData;
 import com.chisom.java_assessment_solution.payload.binlist_response.BinListResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataPayload;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
+import com.chisom.java_assessment_solution.repository.CardDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,6 +16,9 @@ public class CardDataService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private CardDataRepository cardDataRepository;
+
     public CardDataResponse verifyCard(String cardNumber) {
 
         try {
@@ -21,6 +26,7 @@ public class CardDataService {
                     BinListResponse.class, cardNumber);
 
             if (binListResponse != null) {
+                saveCardData(cardNumber, binListResponse);
                 return TheCardDataResponse(binListResponse);
             }
             return null;
@@ -43,5 +49,17 @@ public class CardDataService {
         cardDataPayload.setBank(binListResponse.getBank().getName());
 
         return cardDataResponse;
+    }
+
+    public void saveCardData(String cardNumber, BinListResponse binListResponse) {
+        CardData cardData = new CardData();
+
+        cardData.setCardNumber(cardNumber);
+        cardData.setScheme(binListResponse.getScheme());
+        cardData.setBank(binListResponse.getBank().getName());
+        cardData.setPrepaid(binListResponse.isPrepaid());
+        cardData.setCountry(binListResponse.getCountry().getName());
+
+        cardDataRepository.save(cardData);
     }
 }
