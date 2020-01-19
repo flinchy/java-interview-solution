@@ -1,5 +1,6 @@
 package com.chisom.java_assessment_solution.service;
 
+import com.chisom.java_assessment_solution.exception.InvalidBinListCardNumberException;
 import com.chisom.java_assessment_solution.payload.binlist_response.BinListResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataPayload;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
@@ -15,8 +16,20 @@ public class CardDataService {
 
     public CardDataResponse verifyCard(String cardNumber) {
 
-        BinListResponse binListResponse = restTemplate.getForObject("https://lookup.binlist.net/{cardNumber}", BinListResponse.class, cardNumber);
-        return TheCardDataResponse(binListResponse);
+        try {
+            BinListResponse binListResponse = restTemplate.getForObject("https://lookup.binlist.net/{cardNumber}",
+                    BinListResponse.class, cardNumber);
+
+            if (binListResponse != null) {
+                return TheCardDataResponse(binListResponse);
+            }
+            return null;
+
+        } catch(Exception ex) {
+            throw new InvalidBinListCardNumberException("Card number '" + cardNumber +"' is invalid");
+        }
+
+
     }
 
     public CardDataResponse TheCardDataResponse(BinListResponse binListResponse) {
