@@ -5,10 +5,15 @@ import com.chisom.java_assessment_solution.model.CardData;
 import com.chisom.java_assessment_solution.payload.binlist_response.BinListResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataPayload;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
+import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import com.chisom.java_assessment_solution.repository.CardDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @Service
 public class CardDataService {
@@ -61,5 +66,18 @@ public class CardDataService {
         cardData.setCountry(binListResponse.getCountry().getName());
 
         cardDataRepository.save(cardData);
+    }
+
+    public CardDataStatisticsResponse getCardStatisticsData(Pageable pageable) {
+
+        CardDataStatisticsResponse cardDataStatisticsResponse = new CardDataStatisticsResponse();
+        Page<Map<String, Object>> page = cardDataRepository.getPage(pageable);
+
+        cardDataStatisticsResponse.setSuccess(true);
+        cardDataStatisticsResponse.setStart(page.getNumber());
+        cardDataStatisticsResponse.setLimit(page.getSize());
+        cardDataStatisticsResponse.setSize(cardDataRepository.findAll().size());
+
+        return cardDataStatisticsResponse;
     }
 }

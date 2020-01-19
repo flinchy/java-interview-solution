@@ -12,4 +12,5 @@ public interface CardDataRepository extends JpaRepository<CardData, Long> {
 
     @Query("SELECT card.cardNumber AS cardNumber, COUNT(card.cardNumber) AS count FROM CardData card GROUP BY card.cardNumber ORDER BY COUNT(card.cardNumber) DESC")
     Page<Map<String, Object>> getPage(Pageable page);
+
 }

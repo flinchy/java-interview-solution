@@ -1,6 +1,7 @@
 package com.chisom.java_assessment_solution.web;
 
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
+import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import com.chisom.java_assessment_solution.service.CardDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,4 +22,5 @@ public class CardDataController {
 
         return new ResponseEntity<>(cardDataResponse, HttpStatus.OK);
     }
+
 }
