@@ -4,6 +4,7 @@ import com.chisom.java_assessment_solution.payload.card_response.CardDataRespons
 import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import com.chisom.java_assessment_solution.service.CardDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,4 +24,10 @@ public class CardDataController {
         return new ResponseEntity<>(cardDataResponse, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/stats", params = {"start", "limit"})
+    public ResponseEntity<CardDataStatisticsResponse> getCardDataStatics(
+            @RequestParam("start") Integer start, @RequestParam("limit") Integer limit) {
+
+        return new ResponseEntity<>(cardDataService.getCardStatisticsData(PageRequest.of(start, limit)), HttpStatus.OK);
+    }
 }

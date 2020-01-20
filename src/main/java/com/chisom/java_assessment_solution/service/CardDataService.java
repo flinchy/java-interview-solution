@@ -7,6 +7,8 @@ import com.chisom.java_assessment_solution.payload.card_response.CardDataPayload
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import com.chisom.java_assessment_solution.repository.CardDataRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,8 @@ import java.util.Map;
 
 @Service
 public class CardDataService {
+
+    private static final Logger log = LoggerFactory.getLogger(CardDataService.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -77,6 +81,8 @@ public class CardDataService {
         cardDataStatisticsResponse.setStart(page.getNumber());
         cardDataStatisticsResponse.setLimit(page.getSize());
         cardDataStatisticsResponse.setSize(cardDataRepository.findAll().size());
+
+        log.info(cardDataStatisticsResponse.toString());
 
         return cardDataStatisticsResponse;
     }
