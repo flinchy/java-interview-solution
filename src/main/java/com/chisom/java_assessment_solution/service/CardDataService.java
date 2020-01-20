@@ -79,7 +79,7 @@ public class CardDataService {
             Page<Map<String, Object>> page = cardDataRepository.getPage(pageable);
 
             cardDataStatisticsResponse.setSuccess(true);
-            cardDataStatisticsResponse.setStart(page.getNumber());
+            cardDataStatisticsResponse.setStart(page.getNumber() + 1);
             cardDataStatisticsResponse.setLimit(page.getSize());
             cardDataStatisticsResponse.setSize(cardDataRepository.findAll().size());
 
