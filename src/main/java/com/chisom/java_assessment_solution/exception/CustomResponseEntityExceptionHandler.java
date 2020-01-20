@@ -17,4 +17,10 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         InvalidBinkListCardNumberResponse binkListCardNumberResponse = new InvalidBinkListCardNumberResponse(ex.getMessage());
         return new ResponseEntity<>(binkListCardNumberResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler
+    public final ResponseEntity<?> handleInvalidPageException(InvalidPageException ex, WebRequest request) {
+        InvalidPageResponse invalidPageResponse = new InvalidPageResponse(ex.getMessage());
+        return new ResponseEntity<>(invalidPageResponse, HttpStatus.BAD_REQUEST);
+    }
 }

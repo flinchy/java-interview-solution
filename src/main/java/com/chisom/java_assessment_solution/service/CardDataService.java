@@ -1,17 +1,17 @@
 package com.chisom.java_assessment_solution.service;
 
 import com.chisom.java_assessment_solution.exception.InvalidBinListCardNumberException;
+import com.chisom.java_assessment_solution.exception.InvalidPageException;
 import com.chisom.java_assessment_solution.model.CardData;
 import com.chisom.java_assessment_solution.payload.binlist_response.BinListResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataPayload;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import com.chisom.java_assessment_solution.repository.CardDataRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,8 +20,6 @@ import java.util.Map;
 
 @Service
 public class CardDataService {
-
-    private static final Logger log = LoggerFactory.getLogger(CardDataService.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -75,24 +73,29 @@ public class CardDataService {
 
     public CardDataStatisticsResponse getCardStatisticsData(Pageable pageable) {
 
-        CardDataStatisticsResponse cardDataStatisticsResponse = new CardDataStatisticsResponse();
-        Page<Map<String, Object>> page = cardDataRepository.getPage(pageable);
+        try {
 
-        cardDataStatisticsResponse.setSuccess(true);
-        cardDataStatisticsResponse.setStart(page.getNumber());
-        cardDataStatisticsResponse.setLimit(page.getSize());
-        cardDataStatisticsResponse.setSize(cardDataRepository.findAll().size());
+            CardDataStatisticsResponse cardDataStatisticsResponse = new CardDataStatisticsResponse();
+            Page<Map<String, Object>> page = cardDataRepository.getPage(pageable);
 
-        if(page.hasContent()) {
-            Map<String, Object> payload = new HashMap<>();
-            for(Map<String, Object> result : page) {
-                payload.put(String.valueOf(result.get("cardNumber")), Integer.parseInt(String.valueOf(result.get("count"))));
+            cardDataStatisticsResponse.setSuccess(true);
+            cardDataStatisticsResponse.setStart(page.getNumber());
+            cardDataStatisticsResponse.setLimit(page.getSize());
+            cardDataStatisticsResponse.setSize(cardDataRepository.findAll().size());
+
+            if(page.hasContent()) {
+                Map<String, Object> payload = new HashMap<>();
+                for(Map<String, Object> result : page) {
+                    payload.put(String.valueOf(result.get("cardNumber")), Integer.parseInt(String.valueOf(result.get("count"))));
+                }
+                cardDataStatisticsResponse.setPayload(payload);
             }
-            cardDataStatisticsResponse.setPayload(payload);
+
+            return cardDataStatisticsResponse;
+
+        } catch (Exception ex) {
+            throw new InvalidPageException("Invalid Page");
         }
 
-        log.info(cardDataStatisticsResponse.toString());
-
-        return cardDataStatisticsResponse;
     }
 }
