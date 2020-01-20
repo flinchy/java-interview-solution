@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -81,6 +82,14 @@ public class CardDataService {
         cardDataStatisticsResponse.setStart(page.getNumber());
         cardDataStatisticsResponse.setLimit(page.getSize());
         cardDataStatisticsResponse.setSize(cardDataRepository.findAll().size());
+
+        if(page.hasContent()) {
+            Map<String, Object> payload = new HashMap<>();
+            for(Map<String, Object> result : page) {
+                payload.put(String.valueOf(result.get("cardNumber")), Integer.parseInt(String.valueOf(result.get("count"))));
+            }
+            cardDataStatisticsResponse.setPayload(payload);
+        }
 
         log.info(cardDataStatisticsResponse.toString());
 
