@@ -1,5 +1,7 @@
 package com.chisom.java_assessment_solution.web;
 
+import com.chisom.java_assessment_solution.exception.InvalidPageException;
+import com.chisom.java_assessment_solution.exception.InvalidPageResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import com.chisom.java_assessment_solution.service.CardDataService;
@@ -27,6 +29,9 @@ public class CardDataController {
     @GetMapping(value = "/stats", params = {"start", "limit"})
     public ResponseEntity<CardDataStatisticsResponse> getCardDataStatics(
             @RequestParam("start") Integer start, @RequestParam("limit") Integer limit) {
+
+        if(start >= 1) start--;
+        if(start < 0) throw new InvalidPageException("Invalid Page");
 
         return new ResponseEntity<>(cardDataService.getCardStatisticsData(PageRequest.of(start, limit)), HttpStatus.OK);
     }
