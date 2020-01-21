@@ -30,9 +30,15 @@ public class CardDataController {
     public ResponseEntity<CardDataStatisticsResponse> getCardDataStatics(
             @RequestParam("start") Integer start, @RequestParam("limit") Integer limit) {
 
-        if(start >= 1) start--;
-        if(start < 0) throw new InvalidPageException("Invalid Page");
+        try {
+            if(start >= 1) start--;
+            return new ResponseEntity<>(cardDataService.getCardStatisticsData(PageRequest.of(start, limit)), HttpStatus.OK);
 
-        return new ResponseEntity<>(cardDataService.getCardStatisticsData(PageRequest.of(start, limit)), HttpStatus.OK);
+        } catch(Exception ex) {
+            throw new InvalidPageException("Invalid page, NOT FOUND");
+        }
+//        if(start >= 1) start--;
+//        if(start < 0) throw new InvalidPageException("Invalid Page");
+
     }
 }
