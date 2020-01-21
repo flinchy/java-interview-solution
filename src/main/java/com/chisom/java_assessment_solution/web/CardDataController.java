@@ -35,7 +35,8 @@ public class CardDataController {
             return new ResponseEntity<>(cardDataService.getCardStatisticsData(PageRequest.of(start, limit)), HttpStatus.OK);
 
         } catch(Exception ex) {
-            throw new InvalidPageException("Invalid page, NOT FOUND");
+            throw new InvalidPageException("Invalid page, start must not be less than 1, limit " +
+                    "must not be empty, and must be a positive number");
         }
 //        if(start >= 1) start--;
 //        if(start < 0) throw new InvalidPageException("Invalid Page");
