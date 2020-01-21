@@ -2,6 +2,7 @@ package com.chisom.java_assessment_solution;
 
 import com.chisom.java_assessment_solution.payload.card_response.CardDataPayload;
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
+import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import com.chisom.java_assessment_solution.service.CardDataService;
 import com.chisom.java_assessment_solution.web.CardDataController;
 import org.junit.Before;
@@ -14,6 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -51,6 +55,22 @@ public class CardDataControllerUnitTest {
         given(cardDataService.verifyCard(any())).willReturn(cardDataResponse);
     }
 
+    @Before
+    public void setupA() {
+        CardDataStatisticsResponse cardDataStatisticsResponse = new CardDataStatisticsResponse();
+        Map<String, Object> payload = new HashMap<>();
+
+        payload.put("432018", 1);
+        payload.put("457173", 3);
+        cardDataStatisticsResponse.setPayload(payload);
+        cardDataStatisticsResponse.setStart(1);
+        cardDataStatisticsResponse.setLimit(2);
+        cardDataStatisticsResponse.setSize(5);
+        cardDataStatisticsResponse.setSuccess(true);
+
+        given(cardDataService.getCardStatisticsData(any())).willReturn(cardDataStatisticsResponse);
+    }
+
     @Test
     public void getCardData() throws Exception {
 
@@ -60,6 +80,14 @@ public class CardDataControllerUnitTest {
                 .andExpect(content().json("{}"));
 
         verify(cardDataService, times(1)).verifyCard("4231233");
+    }
+
+    @Test
+    public void getCardDataStatics() throws Exception {
+
+        mockMvc.perform(get("/card-scheme/stats?start=1&limit=2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
     }
 
