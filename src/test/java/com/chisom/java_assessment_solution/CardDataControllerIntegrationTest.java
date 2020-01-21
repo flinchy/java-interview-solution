@@ -1,6 +1,7 @@
 package com.chisom.java_assessment_solution;
 
 import com.chisom.java_assessment_solution.payload.card_response.CardDataResponse;
+import com.chisom.java_assessment_solution.payload.card_response.CardDataStatisticsResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,14 @@ public class CardDataControllerIntegrationTest {
     public void getCardData() {
         ResponseEntity<CardDataResponse> response = this.testRestTemplate.getForEntity("http://localhost:"+
                 port+"/card-scheme/verify/4231233", CardDataResponse.class);
+
+        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+    }
+
+    @Test
+    public void getCardDataStatics() {
+        ResponseEntity<CardDataStatisticsResponse> response = this.testRestTemplate.getForEntity("http://localhost:"+
+                port+"/card-scheme/stats?start=1&limit=2", CardDataStatisticsResponse.class);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
